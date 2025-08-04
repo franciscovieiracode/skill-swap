@@ -20,4 +20,9 @@ public class SkillsController {
         return ResponseEntity.status(HttpStatus.CREATED).body(skillsServices.addSkill(skillsDto));
     }
 
+    @PostMapping("/removeSkill")
+    public ResponseEntity<SkillsResponseDto> removeSkills(@RequestBody SkillsDto skillsDto){
+        return ResponseEntity.status(HttpStatus.OK).body(skillsServices.removeSkill(skillsDto));
+    }
+
 }

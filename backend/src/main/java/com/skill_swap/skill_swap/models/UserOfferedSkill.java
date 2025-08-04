@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @Entity
@@ -38,5 +39,5 @@ public class UserOfferedSkill {
     private String notes;
 
     @Column(name = "createdAt")
-    private LocalDate createdAt;
+    private ZonedDateTime createdAt;
 }
