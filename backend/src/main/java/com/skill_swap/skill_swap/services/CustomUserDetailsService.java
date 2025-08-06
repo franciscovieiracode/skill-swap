@@ -1,7 +1,7 @@
 package com.skill_swap.skill_swap.services;
 
 import com.skill_swap.skill_swap.models.User;
-import com.skill_swap.skill_swap.repositories.AuthRepository;
+import com.skill_swap.skill_swap.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,11 +14,11 @@ import java.util.Collections;
 public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
-    private AuthRepository authRepository;
+    private UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = authRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email);
 
         if (user == null) {
             throw new UsernameNotFoundException("User not found with email: " + email);

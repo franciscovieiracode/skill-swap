@@ -8,10 +8,12 @@ import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import { Toaster } from "react-hot-toast";
 import Home from "./pages/Home";
+import { AuthProvider } from "./context/AuthContext";
 
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
+    <AuthProvider>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
@@ -21,5 +23,6 @@ createRoot(document.getElementById("root")!).render(
       </Routes>
     </BrowserRouter>
     <Toaster position="top-right"/>
+    </AuthProvider>
   </StrictMode>
 );

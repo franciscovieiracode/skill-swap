@@ -6,19 +6,18 @@ import com.skill_swap.skill_swap.exceptions.UserOfferedSkillsException;
 import com.skill_swap.skill_swap.models.Skill;
 import com.skill_swap.skill_swap.models.User;
 import com.skill_swap.skill_swap.models.UserOfferedSkill;
-import com.skill_swap.skill_swap.repositories.AuthRepository;
+import com.skill_swap.skill_swap.repositories.UserRepository;
 import com.skill_swap.skill_swap.repositories.SkillsRepository;
 import com.skill_swap.skill_swap.repositories.UserOfferedSkillsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.time.chrono.ChronoZonedDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class UserOfferedSkillsService {
@@ -30,12 +29,12 @@ public class UserOfferedSkillsService {
     SkillsRepository skillsRepository;
 
     @Autowired
-    AuthRepository authRepository;
+    UserRepository userRepository;
 
     public SkillsResponseDto addUserOfferedSkill(AddOfferedSkillsDto addOfferedSkillsDto, String email){
 
         //get user
-        User user = authRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email);
 
         if (user == null)
             throw new UserOfferedSkillsException("Invalid User Token");
@@ -61,20 +60,57 @@ public class UserOfferedSkillsService {
         return new SkillsResponseDto("Added Skill to User");
     }
 
-    public List<OfferedSkillsDto> getAllOfferedSkills(){
-        return offeredSkillsRepository.findAll().stream().map(offered -> new OfferedSkillsDto(
-                offered.getId(),
-                offered.getSkill().getName(),
-                offered.getSkill().getCategory(),
-                offered.getUser().getName(),
-                offered.getExperience(),
-                offered.getNotes()
-        )).toList();
+    public List<OfferedSkillsDto> getAllOfferedSkills(String category, String dateRange, Boolean sortByExperience){
+
+        List<UserOfferedSkill> offeredSkills = offeredSkillsRepository.findAll();
+
+        // Filter by category
+        if (category != null && !category.isEmpty()) {
+            offeredSkills = offeredSkills.stream()
+                    .filter(x -> x.getSkill().getCategory().equals(category))
+                    .toList();
+        }
+
+        // Filter by date range
+        if (dateRange != null) {
+            LocalDate cutoffDate = LocalDate.now();
+            if ("last7d".equalsIgnoreCase(dateRange)) {
+                cutoffDate = cutoffDate.minusDays(7);
+            } else if ("last30d".equalsIgnoreCase(dateRange)) {
+                cutoffDate = cutoffDate.minusDays(30);
+            }
+
+            LocalDate finalCutoffDate = cutoffDate;
+            offeredSkills = offeredSkills.stream()
+                    .filter(x -> x.getCreatedAt().toLocalDate().isAfter(finalCutoffDate))
+                    .toList();
+        }
+
+        // Sort by points descending
+        if (Boolean.TRUE.equals(sortByExperience)) {
+            offeredSkills = offeredSkills.stream()
+                    .sorted(Comparator.comparingInt(UserOfferedSkill::getExperience).reversed())
+                    .toList();
+        }
+
+        // Map to DTO only once
+        return offeredSkills.stream()
+                .map(offered -> new OfferedSkillsDto(
+                        offered.getId(),
+                        offered.getSkill().getName(),
+                        offered.getSkill().getCategory(),
+                        offered.getUser().getName(),
+                        offered.getExperience(),
+                        offered.getNotes(),
+                        offered.getCreatedAt()
+                ))
+                .toList();
     }
+
 
     public List<OfferedSkillsDto> getOfferedSkillsById(String email){
 
-        User user = authRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email);
         if (user == null)
             throw new UserOfferedSkillsException("Invalid User Token");
 
@@ -86,6 +122,7 @@ public class UserOfferedSkillsService {
                 skill.getSkill().getCategory(),
                 user.getName(),
                 skill.getExperience(),
-                skill.getNotes()
+                skill.getNotes(),
+                skill.getCreatedAt()
         )).toList();    }
 }

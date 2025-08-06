@@ -1,29 +1,25 @@
 package com.skill_swap.skill_swap.services;
 
 import com.skill_swap.skill_swap.dto.AuthDataDto;
+import com.skill_swap.skill_swap.dto.AuthLogoutDto;
 import com.skill_swap.skill_swap.dto.AuthResponseDto;
 import com.skill_swap.skill_swap.exceptions.AuthException;
 import com.skill_swap.skill_swap.jwt.JwtUtils;
 import com.skill_swap.skill_swap.models.User;
-import com.skill_swap.skill_swap.repositories.AuthRepository;
+import com.skill_swap.skill_swap.repositories.UserRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class AuthServices {
 
     @Autowired
-    AuthRepository authRepository;
+    UserRepository userRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -34,7 +30,7 @@ public class AuthServices {
     @Transactional
     public AuthResponseDto signup(AuthDataDto authDataDto, HttpServletResponse httpServletResponse){
 
-        User userTemp = authRepository.findByEmail(authDataDto.email());
+        User userTemp = userRepository.findByEmail(authDataDto.email());
 
         if (userTemp != null)
             throw new AuthException("User Already Exists");
@@ -48,7 +44,7 @@ public class AuthServices {
         user.setPoints(0);
         user.setTimeZone(authDataDto.timeZone());
 
-        authRepository.save(user);
+        userRepository.save(user);
 
         String jwtToken = jwtUtils.generateToken(user.getEmail());
 
@@ -63,18 +59,19 @@ public class AuthServices {
         return  new AuthResponseDto(jwtToken);
     }
 
-    public AuthResponseDto test(UserDetails userDetails){
+    public AuthLogoutDto logout(HttpServletResponse httpServletResponse){
 
-        if (userDetails != null) {
-            return new AuthResponseDto(userDetails.getUsername());
-        }
+        Cookie cookie = new Cookie("jwt", null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        httpServletResponse.addCookie(cookie);
 
-        throw new  AuthException("Invalid User");
+        return new AuthLogoutDto(true);
     }
 
     public AuthResponseDto login(AuthDataDto authDataDto, HttpServletResponse httpServletResponse){
 
-        User userTemp = authRepository.findByEmail(authDataDto.email());
+        User userTemp = userRepository.findByEmail(authDataDto.email());
 
         if (userTemp == null)
             throw new AuthException("User not found");

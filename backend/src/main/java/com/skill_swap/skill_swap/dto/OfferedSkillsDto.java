@@ -1,5 +1,6 @@
 package com.skill_swap.skill_swap.dto;
 
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 public record OfferedSkillsDto(
@@ -8,5 +9,6 @@ public record OfferedSkillsDto(
     String skillCategory,
     String userName,
     int experience,
-    String notes
+    String notes,
+    ZonedDateTime created_at
 ) {}

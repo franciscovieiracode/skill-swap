@@ -1,6 +1,10 @@
+import { Navigate, useNavigate } from "react-router-dom";
 import {ReactTyped} from "react-typed";
 
 const Hero = () => {
+
+  const navigate = useNavigate();
+
   return (
 <section className="text-white h-[calc(100vh-96px)] flex items-center">
       <div className="max-w-5xl mx-auto text-center px-4">
@@ -32,8 +36,8 @@ const Hero = () => {
         <p className="text-lg md:text-2xl text-gray-400 mt-4">
           Learn new skills or share your expertise with others — no money required.
         </p>
-        <button className="bg-[#00df9a] px-6 py-3 rounded-xl font-medium text-black hover:bg-[#00c57a] transition-colors mt-8">
-          Join SkillSwap
+        <button onClick={()=> {navigate("/home")}} className="bg-[#00df9a] px-6 py-3 rounded-xl font-medium text-black hover:bg-[#00c57a] transition-colors mt-8">
+          Get Started
         </button>
       </div>
     </section>

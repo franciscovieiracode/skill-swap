@@ -28,4 +28,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorDto, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(CategoryException.class)
+    public ResponseEntity<ApiErrorDto> offeredSkillError(CategoryException ex){
+        ApiErrorDto errorDto = new ApiErrorDto(HttpStatus.CONFLICT, ex.getMessage());
+        return new ResponseEntity<>(errorDto, HttpStatus.CONFLICT);
+    }
+
 }

@@ -29,9 +29,13 @@ public class UserOfferedSkillsController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userOfferedSkillsService.addUserOfferedSkill(addOfferedSkillsDto, userDetails.getUsername()));
     }
 
+    //get home skills with or without filers
     @GetMapping("/getAllOfferedSkills")
-    public ResponseEntity<List<OfferedSkillsDto>> getAllOfferedSkills(){
-        return ResponseEntity.status(HttpStatus.OK).body(userOfferedSkillsService.getAllOfferedSkills());
+    public ResponseEntity<List<OfferedSkillsDto>> getAllOfferedSkills(
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String dateRange,
+            @RequestParam(required = false) Boolean sortByExperience) {
+        return ResponseEntity.status(HttpStatus.OK).body(userOfferedSkillsService.getAllOfferedSkills(category, dateRange, sortByExperience));
     }
 
     @GetMapping("/getOfferedSkillsByUser")
