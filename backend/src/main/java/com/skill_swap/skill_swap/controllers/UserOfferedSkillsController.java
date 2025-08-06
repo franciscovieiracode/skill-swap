@@ -43,4 +43,9 @@ public class UserOfferedSkillsController {
         return ResponseEntity.status(HttpStatus.OK).body(userOfferedSkillsService.getOfferedSkillsById(userDetails.getUsername()));
     }
 
+    @GetMapping("/getOfferedSkillById/:uuid")
+    public ResponseEntity<OfferedSkillsDto> getOfferedSkillById(@RequestParam String uuid){
+        return ResponseEntity.status(HttpStatus.OK).body(userOfferedSkillsService.getOfferedSkillById(uuid));
+    }
+
 }

@@ -72,7 +72,7 @@ public class UserOfferedSkillsService {
         }
 
         // Filter by date range
-        if (dateRange != null) {
+        if (!dateRange.equals("noRange")) {
             LocalDate cutoffDate = LocalDate.now();
             if ("last7d".equalsIgnoreCase(dateRange)) {
                 cutoffDate = cutoffDate.minusDays(7);
@@ -125,4 +125,12 @@ public class UserOfferedSkillsService {
                 skill.getNotes(),
                 skill.getCreatedAt()
         )).toList();    }
+
+    public OfferedSkillsDto getOfferedSkillById(String uuid){
+
+        
+
+        return null;
+    }
+
 }

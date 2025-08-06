@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
 import dashboardApi from "../api/dashboardApi";
 
-export default function SideBar() {
+export default function SideBar( {onSearch} ) {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [dateRange, setDateRange] = useState("");
-  const [sortByPoints, setSortByPoints] = useState(false);
+  const [sortByExperience, setSortByExperience] = useState(false);
 
   useEffect(() => {
     const getAllCategories = async () => {
       try {
         const res = await dashboardApi.getAllCategories();
-        setCategories(res); // ✅ ensure res is the correct array (adjust if res.data)
+        setCategories(res);
+        console.log(res);
+        
       } catch (err) {
         console.error(err);
       }
@@ -20,14 +22,15 @@ export default function SideBar() {
     getAllCategories();
   }, []);
 
-  const handleSearch = () => {
-    // This is where you’d call your API with the selected filters
-    console.log({
-      category: selectedCategory,
-      dateRange: dateRange,
-      sortByPoints: sortByPoints,
-    });
-  };
+
+const handleSearch = () => {
+  console.log("Searching with category:", selectedCategory);
+  onSearch({
+    category: selectedCategory,
+    dateRange,
+    sortByExperience,
+  });
+};
 
   return (
     <aside className="w-64 bg-gray-800 p-6 text-white min-h-screen">
@@ -36,13 +39,13 @@ export default function SideBar() {
       {/* Category Dropdown */}
       <label className="block mb-3 text-sm">Select Category</label>
       <select
-        value={selectedCategory}
+        value={selectedCategory.name}
         onChange={(e) => setSelectedCategory(e.target.value)}
         className="w-full p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
       >
         <option value="">-- Choose a Category --</option>
         {categories.map((category) => (
-          <option key={category.id} value={category.id}>
+          <option key={category.id} value={category.name}>
             {category.name}
           </option>
         ))}
@@ -64,8 +67,8 @@ export default function SideBar() {
       <div className="flex items-center mb-4">
         <input
           type="checkbox"
-          checked={sortByPoints}
-          onChange={(e) => setSortByPoints(e.target.checked)}
+          checked={sortByExperience}
+          onChange={(e) => setSortByExperience(e.target.checked)}
           className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
         />
         <label className="ml-2 text-sm">Sort by Experience Points</label>

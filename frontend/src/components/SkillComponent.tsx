@@ -22,6 +22,7 @@ export default function SkillComponent({ offer }) {
         </p>
       </div>
       <p className="text-gray-400 text-xs">Offered by: {offer.userName}</p>
+      
     </div>
   );
 }
