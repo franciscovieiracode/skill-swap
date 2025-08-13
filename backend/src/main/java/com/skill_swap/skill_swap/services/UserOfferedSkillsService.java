@@ -18,6 +18,7 @@ import java.time.chrono.ChronoZonedDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserOfferedSkillsService {
@@ -126,11 +127,23 @@ public class UserOfferedSkillsService {
                 skill.getCreatedAt()
         )).toList();    }
 
-    public OfferedSkillsDto getOfferedSkillById(String uuid){
+    public OfferedSkillsDto getOfferedSkillById(String id){
 
-        
+        Optional<UserOfferedSkill> userOfferedSkill = offeredSkillsRepository.findById(UUID.fromString(id));
 
-        return null;
+        if (userOfferedSkill.isEmpty())
+            throw new UserOfferedSkillsException("Invalid Skill");
+
+        return new OfferedSkillsDto(
+                userOfferedSkill.get().getId(),
+                userOfferedSkill.get().getSkill().getName(),
+                userOfferedSkill.get().getSkill().getCategory(),
+                userOfferedSkill.get().getUser().getName(),
+                userOfferedSkill.get().getExperience(),
+                userOfferedSkill.get().getNotes(),
+                userOfferedSkill.get().getCreatedAt()
+
+        );
     }
 
 }

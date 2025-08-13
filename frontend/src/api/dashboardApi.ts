@@ -26,6 +26,10 @@ const dashboardApi = {
   },
   getAllCategories: () =>
     axiosClient.get(ENDPOINTS.DASHBOARD.GETALLCATEGORIES),
+
+
+  getSkillById:(id : string) => { return axiosClient.get(ENDPOINTS.DASHBOARD.GETSKILLBYID + id)},
+
 };
 
 export default dashboardApi;

@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-import dashboardApi from "../api/dashboardApi";
 import SkillComponent from "./SkillComponent";
 
 export default function SkillsList( {offers = [] } ) {

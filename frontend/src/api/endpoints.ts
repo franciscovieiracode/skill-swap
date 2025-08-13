@@ -9,6 +9,7 @@ export const ENDPOINTS = {
     },
     DASHBOARD : {
         GETALLOFFEREDSKILLS : "/api/v1/userOfferedSkills/getAllOfferedSkills",
-        GETALLCATEGORIES : "/api/v1/category/getAllCategories"
+        GETALLCATEGORIES : "/api/v1/category/getAllCategories",
+        GETSKILLBYID : "/api/v1/userOfferedSkills/getOfferedSkillById/"
     }
 }
