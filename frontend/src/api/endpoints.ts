@@ -11,5 +11,8 @@ export const ENDPOINTS = {
         GETALLOFFEREDSKILLS : "/api/v1/userOfferedSkills/getAllOfferedSkills",
         GETALLCATEGORIES : "/api/v1/category/getAllCategories",
         GETSKILLBYID : "/api/v1/userOfferedSkills/getOfferedSkillById/"
+    },
+    SKILLS: {
+        MAKEREQUESTSKILL: "/api/v1/requests/createRequest"
     }
 }

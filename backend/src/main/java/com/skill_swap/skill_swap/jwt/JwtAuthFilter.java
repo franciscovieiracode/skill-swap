@@ -31,6 +31,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+
+        if (request.getServletPath().startsWith("/ws")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         // Get JWT from cookie
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {

@@ -3,19 +3,34 @@ import { useEffect, useState } from "react";
 import { MdStar, MdFavorite, MdFavoriteBorder } from "react-icons/md";
 import dashboardApi from "../api/dashboardApi";
 import { Navbar } from "./Navbar";
+import skillsApi from "../api/skillsApi";
+import type { MakeRequestDto } from "../dto/skills/MakeRequestDto";
+
+// Define type for details
+interface SkillDetailsType {
+  userId: string;
+  userName: string;
+  skillName: string;
+  skillCategory: string;
+  experience: string;
+  description?: string;
+}
 
 export default function SkillDetails() {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>(); // Ensure id is string
   const navigate = useNavigate();
-  const [details, setDetails] = useState(null);
+  const [details, setDetails] = useState<SkillDetailsType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
+    if (!id) return; // id is undefined, cannot fetch
     const getSkillById = async () => {
       try {
         const res = await dashboardApi.getSkillById(id);
+        console.log(res);
+        
         setDetails(res);
       } catch (err) {
         console.error(err);
@@ -24,14 +39,27 @@ export default function SkillDetails() {
         setLoading(false);
       }
     };
-
     getSkillById();
   }, [id]);
 
-  const toggleFavorite = () => {
-    setIsFavorite((prev) => !prev);
-    // Optionally: send API request to save favorite
+  const handleContact = async () => {
+    if (!details || !id) return; // Safely check before using
+
+    const payload: MakeRequestDto = {
+      receiptingId: details.userId,
+      skillId: id,
+    };
+
+    try {
+      await skillsApi.makeRequest(payload);
+    } catch (err) {
+      console.error(err);
+    }
   };
+
+  const toggleFavorite = () => {
+    
+  }
 
   if (loading) {
     return (
@@ -84,7 +112,7 @@ export default function SkillDetails() {
         )}
 
         <button
-          onClick={() => alert("Contact feature coming soon!")}
+          onClick={handleContact}
           className="px-6 py-2 bg-green-600 hover:bg-green-700 rounded text-white"
         >
           Contact

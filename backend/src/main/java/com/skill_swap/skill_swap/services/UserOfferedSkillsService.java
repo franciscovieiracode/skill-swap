@@ -98,8 +98,10 @@ public class UserOfferedSkillsService {
         return offeredSkills.stream()
                 .map(offered -> new OfferedSkillsDto(
                         offered.getId(),
+                        offered.getSkill().getId(),
                         offered.getSkill().getName(),
                         offered.getSkill().getCategory(),
+                        offered.getUser().getId(),
                         offered.getUser().getName(),
                         offered.getExperience(),
                         offered.getNotes(),
@@ -119,8 +121,10 @@ public class UserOfferedSkillsService {
 
         return offeredSkills.stream().map(skill -> new OfferedSkillsDto(
                 skill.getId(),
+                skill.getSkill().getId(),
                 skill.getSkill().getName(),
                 skill.getSkill().getCategory(),
+                user.getId(),
                 user.getName(),
                 skill.getExperience(),
                 skill.getNotes(),
@@ -136,8 +140,10 @@ public class UserOfferedSkillsService {
 
         return new OfferedSkillsDto(
                 userOfferedSkill.get().getId(),
+                userOfferedSkill.get().getSkill().getId(),
                 userOfferedSkill.get().getSkill().getName(),
                 userOfferedSkill.get().getSkill().getCategory(),
+                userOfferedSkill.get().getUser().getId(),
                 userOfferedSkill.get().getUser().getName(),
                 userOfferedSkill.get().getExperience(),
                 userOfferedSkill.get().getNotes(),
